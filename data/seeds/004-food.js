@@ -1,13 +1,25 @@
-
 exports.seed = function(knex) {
-  // Deletes ALL existing entries
-  return knex('table_name').del()
-    .then(function () {
-      // Inserts seed entries
-      return knex('table_name').insert([
-        {id: 1, colName: 'rowValue1'},
-        {id: 2, colName: 'rowValue2'},
-        {id: 3, colName: 'rowValue3'}
-      ]);
-    });
+	// Deletes ALL existing entries
+	return knex("food")
+		.truncate()
+		.then(function() {
+			// Inserts seed entries
+			return knex("food").insert([
+				{
+					event_id: 1,
+					recipe_name: "Pizza",
+					guest_id: null
+				},
+				{
+					event_id: 1,
+					recipe_name: "Beer",
+					guest_id: 1
+				},
+				{
+					event_id: 2,
+					recipe_name: "Amway",
+					guest_id: 2
+				}
+			]);
+		});
 };

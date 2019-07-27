@@ -1,13 +1,25 @@
-
 exports.seed = function(knex) {
-  // Deletes ALL existing entries
-  return knex('table_name').del()
-    .then(function () {
-      // Inserts seed entries
-      return knex('table_name').insert([
-        {id: 1, colName: 'rowValue1'},
-        {id: 2, colName: 'rowValue2'},
-        {id: 3, colName: 'rowValue3'}
-      ]);
-    });
+	// Deletes ALL existing entries
+	return knex("guests")
+		.truncate()
+		.then(function() {
+			// Inserts seed entries
+			return knex("guests").insert([
+				{
+					user_id: 1,
+					event_id: 1,
+					attending: true
+				},
+				{
+					user_id: 1,
+					event_id: 2,
+					attending: false
+				},
+				{
+					user_id: 2,
+					event_id: 2,
+					attending: true
+				}
+			]);
+		});
 };

@@ -1,25 +1,25 @@
 exports.up = function(knex) {
 	return knex.schema
 		.createTable("users", users => {
-			users.increments("user-id");
+			users.increments("user_id");
 			users
 				.string("username")
 				.notNullable()
 				.unique();
 			users.string("password").notNullable();
-			users.string("full-name").notNullable();
+			users.string("full_name").notNullable();
 		})
 		.createTable("events", events => {
-			events.increments("event-id");
+			events.increments("event_id");
 			events
-				.integer("organizer-id")
+				.integer("organizer_id")
 				.unsigned()
 				.notNullable()
-				.references("user-id")
+				.references("user_id")
 				.inTable("users")
 				.onDelete("CASCADE")
 				.onUpdate("CASCADE");
-			events.string("event-name").notNullable();
+			events.string("event_name").notNullable();
 			events.date("date").notNullable();
 			events.time("time").notNullable();
 			events.string("description").notNullable();
@@ -28,41 +28,40 @@ exports.up = function(knex) {
 			events.string("state").notNullable();
 		})
 		.createTable("guests", guests => {
-			guests.increments("guest-id");
+			guests.increments("guest_id");
 			guests
-				.integer("user-id")
+				.integer("user_id")
 				.unsigned()
 				.notNullable()
-				.references("user-id")
+				.references("user_id")
 				.inTable("users")
 				.onDelete("CASCADE")
 				.onUpdate("CASCADE");
 			guests
-				.integer("event-id")
+				.integer("event_id")
 				.unsigned()
 				.notNullable()
-				.references("event-id")
+				.references("event_id")
 				.inTable("events")
 				.onDelete("CASCADE")
 				.onUpdate("CASCADE");
 			guests.boolean("attending").defaultTo(null);
 		})
 		.createTable("food", recipes => {
-			recipes.increments("food-id");
+			recipes.increments("food_id");
 			recipes
-				.integer("event-id")
+				.integer("event_id")
 				.unsigned()
 				.notNullable()
-				.references("event-id")
+				.references("event_id")
 				.inTable("events")
 				.onDelete("CASCADE")
 				.onUpdate("CASCADE");
-			recipes.string("recipe-name").notNullable();
+			recipes.string("recipe_name").notNullable();
 			recipes
-				.integer("guest-id")
+				.integer("guest_id")
 				.unsigned()
-				.notNullable()
-				.references("user-id")
+				.references("user_id")
 				.inTable("users")
 				.onDelete("CASCADE")
 				.onUpdate("CASCADE");
