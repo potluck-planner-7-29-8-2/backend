@@ -24,13 +24,13 @@ module.exports = {
 			);
 	},
 
-	getByIdFood: function(id) {
-		return db("food as f")
-			.join("events as e", "f.event_id", "e.event_id")
-			.join("users as u", "u.user_id", "f.user_id")
+	getByIdRecipes: function(id) {
+		return db("recipes as r")
+			.join("events as e", "r.event_id", "e.event_id")
+			.leftJoin("users as u", "u.user_id", "r.user_id")
 			.where("e.event_id", id)
-			.select("f.recipe_name", "u.user_id", "u.full_name")
-			.orderBy("f.recipe_name");
+			.select("r.recipe_name", "u.user_id", "u.full_name")
+			.orderBy("r.recipe_name");
 	},
 
 	insert: function(event) {
@@ -47,6 +47,15 @@ module.exports = {
 				attending: guest.attending
 			})
 			.then(() => this.getByIdGuests(event_id));
+	},
+
+	insertRecipe: function(event_id, recipe) {
+		return db("recipes")
+			.insert({
+				event_id,
+				recipe_name: recipe.recipe_name
+			})
+			.then(() => this.getByIdRecipes(event_id));
 	},
 
 	update: function(id, changes) {

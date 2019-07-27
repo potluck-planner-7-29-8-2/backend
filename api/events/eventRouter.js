@@ -19,14 +19,14 @@ router.get("/", async (req, res) => {
 router.get("/:id", middleware.checkEventId, async (req, res) => {
 	try {
 		const guests = await eventDB.getByIdGuests(req.params.id);
-		const food = await eventDB.getByIdFood(req.params.id);
-		if (food.length !== 0) {
-			res.status(200).json({ ...req.event, guests, food });
+		const recipes = await eventDB.getByIdRecipes(req.params.id);
+		if (recipes.length !== 0) {
+			res.status(200).json({ ...req.event, guests, recipes });
 		} else {
 			res.status(200).json({
 				...req.event,
 				guests,
-				food: "There is no food listed for this event."
+				recipes: "There are no recipes listed for this event."
 			});
 		}
 	} catch (error) {
@@ -49,20 +49,20 @@ router.get("/:id/guests", middleware.checkEventId, async (req, res) => {
 	}
 });
 
-router.get("/:id/food", middleware.checkEventId, async (req, res) => {
+router.get("/:id/recipes", middleware.checkEventId, async (req, res) => {
 	try {
-		const food = await eventDB.getByIdFood(req.params.id);
-		if (food.length !== 0) {
-			res.status(200).json(food);
+		const recipes = await eventDB.getByIdRecipes(req.params.id);
+		if (recipes.length !== 0) {
+			res.status(200).json(recipes);
 		} else {
 			res
 				.status(404)
-				.json({ message: "There is no food listed for this event." });
+				.json({ message: "There are no recipes listed for this event." });
 		}
 	} catch (error) {
 		console.log(error);
 		res.status(500).json({
-			error: "The food for the event specified could not be retrieved."
+			error: "The recipes for the event specified could not be retrieved."
 		});
 	}
 });
@@ -80,6 +80,23 @@ router.post(
 			console.log(error);
 			res.status(500).json({
 				error: "There was an error while adding the guest to the event"
+			});
+		}
+	}
+);
+
+router.post(
+	"/:id/recipes",
+	middleware.checkRecipe,
+	middleware.checkEventId,
+	async (req, res) => {
+		try {
+			const recipes = await eventDB.insertRecipe(req.params.id, req.body);
+			res.status(201).json(recipes);
+		} catch (error) {
+			console.log(error);
+			res.status(500).json({
+				error: "There was an error while adding the recipe to the event"
 			});
 		}
 	}

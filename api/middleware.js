@@ -8,7 +8,7 @@ module.exports = {
 	checkEvent,
 	checkEventId,
 	checkGuest,
-	checkFood
+	checkRecipe
 };
 
 async function checkUserId(req, res, next) {
@@ -123,7 +123,6 @@ async function checkGuest(req, res, next) {
 		const guestExist = eventGuests
 			.map(guest => guest.user_id)
 			.find(userID => (req.body.user_id ? userID === req.body.user_id : null));
-		console.log(guestExist);
 		if (Object.keys(req.body).length === 0) {
 			return res.status(400).json({ message: "Missing Guest Data." });
 		} else if (!user_id) {
@@ -147,9 +146,9 @@ async function checkGuest(req, res, next) {
 	}
 }
 
-function checkFood(req, res, next) {
+function checkRecipe(req, res, next) {
 	if (Object.keys(req.body).length === 0)
-		return res.status(400).json({ message: "Missing Food Data." });
+		return res.status(400).json({ message: "Missing Recipe Data." });
 	const { recipe_name } = req.body;
 	if (!recipe_name)
 		return res.status(400).json({
