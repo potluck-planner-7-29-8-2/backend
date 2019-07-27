@@ -9,7 +9,7 @@ router.post("/register", middleware.checkUserRegister, async (req, res) => {
 	try {
 		const hash = bcrypt.hashSync(req.body.password, 10);
 		req.body.password = hash;
-		const user = await userDB.addUser(req.body);
+		const user = await userDB.insert(req.body);
 		res.status(201).json(user);
 	} catch (error) {
 		console.log(error);

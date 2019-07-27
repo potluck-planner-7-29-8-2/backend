@@ -1,6 +1,5 @@
 const userDB = require("./users/userModel.js");
 const eventDB = require("./events/eventModel.js");
-const foodDB = require("./food/foodModel.js");
 
 module.exports = {
 	checkUserRegister,
@@ -8,8 +7,8 @@ module.exports = {
 	checkUserId,
 	checkEvent,
 	checkEventId,
-	checkFood,
-	checkFoodId
+	checkGuest,
+	checkFood
 };
 
 async function checkUserId(req, res, next) {
@@ -114,19 +113,36 @@ function checkEvent(req, res, next) {
 	next();
 }
 
-async function checkFoodId(req, res, next) {
+async function checkGuest(req, res, next) {
 	try {
-		const food = await foodDB.getById(req.params.id);
-		if (food) {
-			req.food = food;
-			next();
+		const user = req.body.user_id
+			? await userDB.getById(req.body.user_id)
+			: null;
+		const { user_id } = req.body;
+		const eventGuests = await eventDB.getByIdGuests(req.params.id);
+		const guestExist = eventGuests
+			.map(guest => guest.user_id)
+			.find(userID => (req.body.user_id ? userID === req.body.user_id : null));
+		console.log(guestExist);
+		if (Object.keys(req.body).length === 0) {
+			return res.status(400).json({ message: "Missing Guest Data." });
+		} else if (!user_id) {
+			return res.status(400).json({
+				message: "Please ensure information for user_id is included."
+			});
+		} else if (!user) {
+			res.status(404).json({ message: "User ID Could Not Be Found." });
+		} else if (guestExist === user_id) {
+			res
+				.status(401)
+				.json({ message: "User has already been invited to event." });
 		} else {
-			res.status(404).json({ message: "Food ID Could Not Be Found." });
+			next();
 		}
 	} catch (error) {
 		console.log(error);
 		res.status(500).json({
-			error: "The food information could not be retrieved."
+			error: "The user/guest information could not be retrieved."
 		});
 	}
 }

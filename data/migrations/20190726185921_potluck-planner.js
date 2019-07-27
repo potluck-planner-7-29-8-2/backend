@@ -59,7 +59,7 @@ exports.up = function(knex) {
 				.onUpdate("CASCADE");
 			recipes.string("recipe_name").notNullable();
 			recipes
-				.integer("guest_id")
+				.integer("user_id")
 				.unsigned()
 				.references("user_id")
 				.inTable("users")

@@ -41,7 +41,7 @@ module.exports = {
 			.first();
 	},
 
-	addUser: async function(user) {
+	insert: async function(user) {
 		const [id] = await db("users").insert(user);
 		return this.getById(id);
 	},
