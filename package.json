@@ -1,0 +1,34 @@
+{
+	"name": "potluck-planner-backend-07-29-08-02",
+	"version": "1.0.0",
+	"description": "Potluck Planner Backend for Build Week 07/29 to 08/02",
+	"main": "index.js",
+	"scripts": {
+		"server": "nodemon index.js",
+		"start": "node index.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/potluck-planner-7-29-8-2/backend.git"
+	},
+	"author": "Ang Xu",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/potluck-planner-7-29-8-2/backend/issues"
+	},
+	"homepage": "https://github.com/potluck-planner-7-29-8-2/backend#readme",
+	"devDependencies": {
+		"nodemon": "^1.19.1"
+	},
+	"dependencies": {
+		"bcryptjs": "^2.4.3",
+		"cors": "^2.8.5",
+		"dotenv": "^8.0.0",
+		"express": "^4.17.1",
+		"helmet": "^3.20.0",
+		"jsonwebtoken": "^8.5.1",
+		"knex": "^0.19.1",
+		"knex-cleaner": "^1.2.1",
+		"sqlite3": "^4.0.9"
+	}
+}
