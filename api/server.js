@@ -2,6 +2,7 @@ const express = require("express");
 const server = express();
 const cors = require("cors");
 const helmet = require("helmet");
+const authenticate = require("./auth/restricted-middleware");
 
 const authRouter = require("./auth/authRouter");
 const userRouter = require("./users/userRouter");
@@ -16,8 +17,8 @@ server.use(cors());
 server.use(express.json());
 
 server.use("/users", authRouter);
-server.use("/users", userRouter);
-server.use("/events", eventRouter);
+server.use("/users", authenticate, userRouter);
+server.use("/events", authenticate, eventRouter);
 
 server.use(errorHandler);
 

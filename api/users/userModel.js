@@ -1,4 +1,5 @@
 const db = require("../../data/db-config");
+const mappers = require("../mappers");
 
 module.exports = {
 	getAll: function() {
@@ -6,10 +7,32 @@ module.exports = {
 	},
 
 	getById: function(id) {
-		return db("users")
-			.select("user_id", "username", "full_name")
+		return db("users as u")
 			.where("user_id", id)
+			.select("u.user_id", "u.username", "u.full_name")
 			.first();
+	},
+
+	getByIdEvents: function(id) {
+		return db("guests as g")
+			.join("events as e", "g.event_id", "e.event_id")
+			.where("user_id", id)
+			.select(
+				"g.event_id",
+				"g.attending",
+				"e.organizer_id",
+				"e.event_name",
+				"e.date",
+				"e.time",
+				"e.description",
+				"e.address",
+				"e.city",
+				"e.state"
+			)
+			.orderBy("g.event_id")
+			.then(events =>
+				events ? events.map(event => mappers.displayTrueFalse(event)) : null
+			);
 	},
 
 	getByUsername: function(username) {
