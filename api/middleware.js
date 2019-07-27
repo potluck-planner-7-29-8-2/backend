@@ -3,7 +3,6 @@ const eventDB = require("./events/eventModel.js");
 const foodDB = require("./food/foodModel.js");
 
 module.exports = {
-	checkUser,
 	checkUserRegister,
 	checkUserLogin,
 	checkUserId,
@@ -30,22 +29,20 @@ async function checkUserId(req, res, next) {
 	}
 }
 
-function checkUser(req, res, next) {
-	if (Object.keys(req.body).length === 0)
-		return res.status(400).json({ message: "Missing User Data." });
-	const { username, password, full_name } = req.body;
-	if (!username || !password || !full_name)
-		return res.status(400).json({
-			message:
-				"Please ensure information for username, password, and full_name is included."
-		});
-	next();
-}
-
 async function checkUserRegister(req, res, next) {
 	try {
-		const user = await userDB.getByUsername(req.body.username);
-		if (user && req.body.username === user.username) {
+		const user = req.body.username
+			? await userDB.getByUsername(req.body.username)
+			: null;
+		const { username, password, full_name } = req.body;
+		if (Object.keys(req.body).length === 0) {
+			res.status(400).json({ message: "Missing User Data." });
+		} else if (!username || !password || !full_name) {
+			res.status(400).json({
+				message:
+					"Please ensure information for username, password, and full_name is included."
+			});
+		} else if (user && req.body.username === user.username) {
 			res.status(401).json({
 				message: "Username is already in use, please choose another."
 			});
@@ -63,8 +60,8 @@ async function checkUserRegister(req, res, next) {
 function checkUserLogin(req, res, next) {
 	if (Object.keys(req.body).length === 0)
 		return res.status(400).json({ message: "Missing User Data." });
-	const { username, password, full_name } = req.body;
-	if (!username || !password || !full_name)
+	const { username, password } = req.body;
+	if (!username || !password)
 		return res.status(400).json({
 			message:
 				"Please ensure information for username and password is included."
