@@ -115,14 +115,18 @@ function checkEvent(req, res, next) {
 
 async function checkGuest(req, res, next) {
 	try {
+		//Check user/guest existence
 		const user = req.body.user_id
 			? await userDB.getById(req.body.user_id)
 			: null;
+		//Check required field
 		const { user_id } = req.body;
+		//Check if guest already invited
 		const eventGuests = await eventDB.getByIdGuests(req.params.id);
 		const guestExist = eventGuests
 			.map(guest => guest.user_id)
 			.find(userID => (req.body.user_id ? userID === req.body.user_id : null));
+
 		if (Object.keys(req.body).length === 0) {
 			return res.status(400).json({ message: "Missing Guest Data." });
 		} else if (!user_id) {
@@ -146,13 +150,35 @@ async function checkGuest(req, res, next) {
 	}
 }
 
-function checkRecipe(req, res, next) {
-	if (Object.keys(req.body).length === 0)
-		return res.status(400).json({ message: "Missing Recipe Data." });
-	const { recipe_name } = req.body;
-	if (!recipe_name)
-		return res.status(400).json({
-			message: "Please ensure information for recipe_name is included."
+async function checkRecipe(req, res, next) {
+	try {
+		//Check required field
+		const { recipe_name } = req.body;
+		//Check if recipe already added
+		const eventRecipes = await eventDB.getByIdRecipes(req.params.id);
+		const recipeExist = eventRecipes
+			.map(recipe => recipe.recipe_name)
+			.find(recipeName =>
+				req.body.recipe_name ? recipeName === req.body.recipe_name : null
+			);
+
+		if (Object.keys(req.body).length === 0) {
+			return res.status(400).json({ message: "Missing Recipe Data." });
+		} else if (!recipe_name) {
+			return res.status(400).json({
+				message: "Please ensure information for recipe_name is included."
+			});
+		} else if (recipeExist === recipe_name) {
+			res
+				.status(401)
+				.json({ message: "Recipe has already been added to event." });
+		} else {
+			next();
+		}
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({
+			error: "The recipe information could not be retrieved."
 		});
-	next();
+	}
 }
