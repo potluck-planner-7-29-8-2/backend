@@ -1,24 +1,24 @@
 exports.seed = function(knex) {
 	// Deletes ALL existing entries
-	return knex("food")
+	return knex("recipes")
 		.truncate()
 		.then(function() {
 			// Inserts seed entries
-			return knex("food").insert([
+			return knex("recipes").insert([
 				{
 					event_id: 1,
 					recipe_name: "Pizza",
-					guest_id: null
+					user_id: null
 				},
 				{
 					event_id: 1,
 					recipe_name: "Beer",
-					guest_id: 1
+					user_id: 1
 				},
 				{
 					event_id: 2,
 					recipe_name: "Amway",
-					guest_id: 2
+					user_id: 2
 				}
 			]);
 		});

@@ -47,8 +47,8 @@ exports.up = function(knex) {
 				.onUpdate("CASCADE");
 			guests.boolean("attending").defaultTo(null);
 		})
-		.createTable("food", recipes => {
-			recipes.increments("food_id");
+		.createTable("recipes", recipes => {
+			recipes.increments("recipe_id");
 			recipes
 				.integer("event_id")
 				.unsigned()
@@ -59,7 +59,7 @@ exports.up = function(knex) {
 				.onUpdate("CASCADE");
 			recipes.string("recipe_name").notNullable();
 			recipes
-				.integer("guest_id")
+				.integer("user_id")
 				.unsigned()
 				.references("user_id")
 				.inTable("users")
@@ -73,5 +73,5 @@ exports.down = function(knex) {
 		.dropTableIfExists("users")
 		.dropTableIfExists("events")
 		.dropTableIfExists("guests")
-		.dropTableIfExists("food");
+		.dropTableIfExists("recipes");
 };
