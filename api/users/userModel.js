@@ -49,7 +49,7 @@ module.exports = {
 	update: function(id, full_name) {
 		return db("users")
 			.where("user_id", id)
-			.update(full_name)
+			.update({ full_name })
 			.then(count => (count > 0 ? this.getById(id) : null));
 	},
 

@@ -62,7 +62,14 @@ module.exports = {
 		return db("events")
 			.where("event_id", id)
 			.update(changes)
-			.then(count => (count > 0 ? this.getById(id) : null));
+			.then(count => (count !== 0 ? this.getById(id) : null));
+	},
+
+	updateGuest: function(event_id, user_id, attending) {
+		return db("guests")
+			.where({ event_id, user_id })
+			.update(attending)
+			.then(count => (count !== 0 ? this.getById(id) : null));
 	},
 
 	remove: function(id) {
@@ -70,5 +77,17 @@ module.exports = {
 			.where("event_id", id)
 			.del()
 			.then(() => this.getAll());
+	},
+
+	removeGuest: function(event_id, user_id) {
+		return db("guests")
+			.where({ event_id, user_id })
+			.del();
+	},
+
+	removeRecipe: function(event_id, recipe_name) {
+		return db("recipes")
+			.where({ event_id, recipe_name })
+			.del();
 	}
 };
