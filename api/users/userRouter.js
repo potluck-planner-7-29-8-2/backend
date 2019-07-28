@@ -61,7 +61,7 @@ router.post("/:id/events", middleware.checkEvent, async (req, res) => {
 			...req.body,
 			organizer_id: req.params.id
 		});
-		const guest = { user_id: req.params.id, attending: 1 };
+		const guest = { user_id: req.params.id, attending: true };
 		const firstGuest = await eventDB.insertGuest(event.event_id, guest);
 		res.status(201).json({ ...event, guests: firstGuest });
 	} catch (error) {
