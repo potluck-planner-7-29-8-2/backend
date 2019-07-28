@@ -62,6 +62,7 @@ module.exports = {
 		return db("events")
 			.where("event_id", id)
 			.update(changes)
+			.orderBy("event_id")
 			.then(count => (count !== 0 ? this.getAll() : null));
 		// .then(count => (count !== 0 ? this.getById(id) : null));
 	},
