@@ -43,7 +43,7 @@ module.exports = {
 
 	insert: function(user) {
 		return db("users")
-			.insert(user, "id")
+			.insert(user, "user_id")
 			.then(([id]) => this.getById(id));
 	},
 
