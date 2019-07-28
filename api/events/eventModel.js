@@ -72,6 +72,7 @@ module.exports = {
 	updateGuest: function(event_id, user_id, changes) {
 		return db("guests")
 			.where({ event_id, user_id })
+			.returning()
 			.update(changes)
 			.then(count => (count !== 0 ? this.getByIdGuests(event_id) : null));
 	},

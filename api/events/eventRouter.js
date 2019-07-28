@@ -192,10 +192,13 @@ router.put("/:id", middleware.checkEventId, async (req, res) => {
 router.put("/:id/guests/:userId", middleware.checkEventId, async (req, res) => {
 	try {
 		let { attending } = req.body;
+
+		//Check that guest exists on guest list
 		const guests = await eventDB.getByIdGuests(req.params.id);
 		const checkGuest = guests
 			.map(guest => guest.user_id)
 			.find(userID => parseInt(req.params.userId) === userID);
+
 		if (Object.keys(req.body).length === 0) {
 			res.status(400).json({ message: "Blank update request detected." });
 		} else if (!checkGuest) {
