@@ -50,7 +50,8 @@ module.exports = {
 		return db("users")
 			.where("user_id", id)
 			.update({ full_name })
-			.then(count => (count > 0 ? this.getById(id) : null));
+			.then(count => (count > 0 ? this.getAll() : null));
+		// .then(count => (count > 0 ? this.getById(id) : null));
 	},
 
 	remove: function(id) {

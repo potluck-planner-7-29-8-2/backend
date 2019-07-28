@@ -192,22 +192,31 @@ router.put("/:id", middleware.checkEventId, async (req, res) => {
 router.put("/:id/guests", middleware.checkEventId, async (req, res) => {
 	try {
 		let { user_id, attending } = req.body;
-		if (Object.keys(req.body).length === 0)
-			return res
-				.status(400)
-				.json({ message: "Blank update request detected." });
-		if (!user_id || !attending) {
-			return res.status(400).json({
+		const guests = req.body.user_id
+			? await eventDB.getByIdGuests(req.params.id)
+			: null;
+		const checkGuest = guests
+			.map(guest => guest.user_id)
+			.find(userID => req.body.user_id === userID);
+		if (Object.keys(req.body).length === 0) {
+			res.status(400).json({ message: "Blank update request detected." });
+		} else if (!checkGuest) {
+			res.status(401).json({
+				message: "User/guest does not exist on the event guest list."
+			});
+		} else if (!user_id || !attending) {
+			res.status(400).json({
 				message:
 					"Please ensure information for user_id and attending are included."
 			});
+		} else {
+			const updated = await eventDB.updateGuest(
+				req.params.id,
+				user_id,
+				booleanToInteger(attending)
+			);
+			res.status(200).json(updated);
 		}
-		const updated = await eventDB.updateGuest(
-			req.params.id,
-			user_id,
-			attending
-		);
-		res.status(200).json(updated);
 	} catch (error) {
 		console.log(error);
 		res.status(500).json({
@@ -216,5 +225,9 @@ router.put("/:id/guests", middleware.checkEventId, async (req, res) => {
 		});
 	}
 });
+
+function booleanToInteger(bool) {
+	return bool === true ? 1 : 0;
+}
 
 module.exports = router;
