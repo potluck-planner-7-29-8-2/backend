@@ -18,10 +18,10 @@ module.exports = {
 			.join("users as u", "u.user_id", "g.user_id")
 			.where("e.event_id", id)
 			.select("u.user_id", "u.full_name", "g.attending")
-			.orderBy("u.user_id");
-		// .then(guests =>
-		// 	guests ? guests.map(guest => mappers.displayTrueFalse(guest)) : null
-		// );
+			.orderBy("u.user_id")
+			.then(guests =>
+				guests ? guests.map(guest => mappers.displayTrueFalse(guest)) : null
+			);
 	},
 
 	getByIdRecipes: function(id) {
