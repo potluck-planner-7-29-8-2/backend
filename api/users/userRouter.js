@@ -61,13 +61,48 @@ router.post("/:id/events", middleware.checkEvent, async (req, res) => {
 			...req.body,
 			organizer_id: req.params.id
 		});
-		const guest = { user_id: req.params.id };
+		const guest = { user_id: req.params.id, attending: true };
 		const firstGuest = await eventDB.insertGuest(event.event_id, guest);
 		res.status(201).json({ ...event, guests: firstGuest });
 	} catch (error) {
 		console.log(error);
 		res.status(500).json({
 			error: "There was an error while adding the event to the database"
+		});
+	}
+});
+
+//DELETE
+router.delete("/:id", middleware.checkUserId, async (req, res) => {
+	try {
+		const count = await userDB.remove(req.params.id);
+		if (count !== 0) {
+			// res.status(200).json(req.user);
+			res.status(200).json(count);
+		}
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({
+			error: "The user could not be removed from the database"
+		});
+	}
+});
+
+//PUT
+router.put("/:id", middleware.checkUserId, async (req, res) => {
+	try {
+		if (!req.body.full_name) {
+			res.status(400).json({
+				message: "Please provide the desired changes to full_name."
+			});
+		} else {
+			const updated = await userDB.update(req.params.id, req.body.full_name);
+			res.status(200).json(updated);
+		}
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({
+			error: "The user could not be updated in the database"
 		});
 	}
 });

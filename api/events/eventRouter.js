@@ -102,4 +102,132 @@ router.post(
 	}
 );
 
+//DELETE
+router.delete("/:id", middleware.checkEventId, async (req, res) => {
+	try {
+		const count = await eventDB.remove(req.params.id);
+		if (count !== 0) {
+			// res.status(200).json(req.event);
+			res.status(200).json(count);
+		}
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({
+			error: "The event could not be removed from the database"
+		});
+	}
+});
+
+router.delete("/:id/guests", middleware.checkEventId, async (req, res) => {
+	try {
+		if (!req.body.user_id) {
+			return res.status(400).json({
+				message: "Please ensure information for user_id is included."
+			});
+		} else {
+			const count = await eventDB.removeGuest(req.params.id, req.body.user_id);
+			if (count !== 0) {
+				const guests = await eventDB.getByIdGuests(req.params.id);
+				res.status(200).json(guests);
+			} else {
+				res.status(404).json({
+					message: "That guest was not found on the event guest list"
+				});
+			}
+		}
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({
+			error: "The guest could not be removed from the event"
+		});
+	}
+});
+
+router.delete("/:id/recipes", middleware.checkEventId, async (req, res) => {
+	try {
+		if (!req.body.recipe_name) {
+			return res.status(400).json({
+				message: "Please ensure information for recipe_name is included."
+			});
+		} else {
+			const count = await eventDB.removeRecipe(
+				req.params.id,
+				req.body.recipe_name
+			);
+			if (count !== 0) {
+				const recipes = await eventDB.getByIdRecipes(req.params.id);
+				res.status(200).json(recipes);
+			} else {
+				res.status(404).json({
+					message: "That recipe was not found on the event recipes list"
+				});
+			}
+		}
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({
+			error: "The recipe could not be removed from the event"
+		});
+	}
+});
+
+//PUT
+router.put("/:id", middleware.checkEventId, async (req, res) => {
+	try {
+		if (Object.keys(req.body).length === 0)
+			return res
+				.status(400)
+				.json({ message: "Blank update request detected." });
+		const updated = await eventDB.update(req.params.id, req.body);
+		res.status(200).json(updated);
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({
+			error:
+				"The event could not be updated in the database, please check request keys"
+		});
+	}
+});
+
+router.put("/:id/guests", middleware.checkEventId, async (req, res) => {
+	try {
+		let { user_id, attending } = req.body;
+		const guests = req.body.user_id
+			? await eventDB.getByIdGuests(req.params.id)
+			: null;
+		const checkGuest = guests
+			.map(guest => guest.user_id)
+			.find(userID => req.body.user_id === userID);
+		if (Object.keys(req.body).length === 0) {
+			res.status(400).json({ message: "Blank update request detected." });
+		} else if (!checkGuest) {
+			res.status(401).json({
+				message: "User/guest does not exist on the event guest list."
+			});
+		} else if (!user_id || !attending) {
+			res.status(400).json({
+				message:
+					"Please ensure information for user_id and attending are included."
+			});
+		} else {
+			const updated = await eventDB.updateGuest(
+				req.params.id,
+				user_id,
+				booleanToInteger(attending)
+			);
+			res.status(200).json(updated);
+		}
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({
+			error:
+				"The event could not be updated in the database, please check request keys"
+		});
+	}
+});
+
+function booleanToInteger(bool) {
+	return bool === true ? 1 : 0;
+}
+
 module.exports = router;
