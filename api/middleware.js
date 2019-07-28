@@ -120,7 +120,7 @@ async function checkGuest(req, res, next) {
 			? await userDB.getById(req.body.user_id)
 			: null;
 		//Check required field
-		const { user_id } = req.body;
+		const { user_id, attending } = req.body;
 		//Check if guest already invited
 		const eventGuests = await eventDB.getByIdGuests(req.params.id);
 		const guestExist = eventGuests
@@ -129,9 +129,10 @@ async function checkGuest(req, res, next) {
 
 		if (Object.keys(req.body).length === 0) {
 			return res.status(400).json({ message: "Missing Guest Data." });
-		} else if (!user_id) {
+		} else if (user_id === undefined || attending === undefined) {
 			return res.status(400).json({
-				message: "Please ensure information for user_id is included."
+				message:
+					"Please ensure information for user_id and attending are included."
 			});
 		} else if (!user) {
 			res.status(404).json({ message: "User ID Could Not Be Found." });
