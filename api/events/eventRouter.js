@@ -189,33 +189,31 @@ router.put("/:id", middleware.checkEventId, async (req, res) => {
 	}
 });
 
-router.put("/:id/guests", middleware.checkEventId, async (req, res) => {
+router.put("/:id/guests/:userId", middleware.checkEventId, async (req, res) => {
 	try {
-		let { user_id, attending } = req.body;
-		const guests = req.body.user_id
-			? await eventDB.getByIdGuests(req.params.id)
-			: null;
+		let { attending } = req.body;
+		const guests = await eventDB.getByIdGuests(req.params.id);
 		const checkGuest = guests
 			.map(guest => guest.user_id)
-			.find(userID => req.body.user_id === userID);
+			.find(userID => parseInt(req.params.userId) === userID);
 		if (Object.keys(req.body).length === 0) {
 			res.status(400).json({ message: "Blank update request detected." });
 		} else if (!checkGuest) {
-			res.status(401).json({
+			res.status(404).json({
 				message: "User/guest does not exist on the event guest list."
 			});
-		} else if (!user_id || !attending) {
-			res.status(400).json({
-				message:
-					"Please ensure information for user_id and attending are included."
-			});
-		} else {
+		} else if (attending === true || attending === false) {
 			const updated = await eventDB.updateGuest(
 				req.params.id,
-				user_id,
-				booleanToInteger(attending)
+				req.params.userId,
+				req.body
 			);
 			res.status(200).json(updated);
+		} else {
+			res.status(400).json({
+				message:
+					"Please ensure information for attending is included (as true or false)."
+			});
 		}
 	} catch (error) {
 		console.log(error);
@@ -226,8 +224,50 @@ router.put("/:id/guests", middleware.checkEventId, async (req, res) => {
 	}
 });
 
-function booleanToInteger(bool) {
-	return bool === true ? 1 : 0;
-}
+router.put("/:id/recipes", middleware.checkEventId, async (req, res) => {
+	try {
+		let { recipe_name, user_id } = req.body;
+
+		//Check if recipe exists on listing
+		const recipes = await eventDB.getByIdRecipes(req.params.id);
+		const checkRecipe = recipe_name
+			? recipes
+					.map(recipe => recipe.recipe_name)
+					.find(recipeName => recipe_name === recipeName)
+			: null;
+
+		//Check if user is guest in event
+		const guests = await eventDB.getByIdGuests(req.params.id);
+		const checkGuest = guests
+			.map(guest => guest.user_id)
+			.find(userID => user_id === userID);
+
+		if (Object.keys(req.body).length === 0) {
+			res.status(400).json({ message: "Blank update request detected." });
+		} else if (recipe_name === undefined || user_id === undefined) {
+			res.status(400).json({
+				message:
+					"Please ensure information for recipe_name and user_id is included."
+			});
+		} else if (!checkRecipe) {
+			res.status(404).json({
+				message: "Recipe does not exist on the event recipe list."
+			});
+		} else if (checkGuest) {
+			const updated = await eventDB.updateRecipe(req.params.id, req.body);
+			res.status(200).json(updated);
+		} else {
+			res.status(404).json({
+				message: "Guest not detected on event guest list."
+			});
+		}
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({
+			error:
+				"The event could not be updated in the database, please check request keys"
+		});
+	}
+});
 
 module.exports = router;
