@@ -41,9 +41,10 @@ module.exports = {
 			.first();
 	},
 
-	insert: async function(user) {
-		const [id] = await db("users").insert(user);
-		return this.getById(id);
+	insert: function(user) {
+		return db("users")
+			.insert(user)
+			.then(([id]) => this.getById(id));
 	},
 
 	update: function(id, full_name) {
