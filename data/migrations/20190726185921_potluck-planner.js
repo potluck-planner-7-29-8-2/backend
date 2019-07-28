@@ -45,7 +45,10 @@ exports.up = function(knex) {
 				.inTable("events")
 				.onDelete("CASCADE")
 				.onUpdate("CASCADE");
-			guests.boolean("attending").defaultTo(false);
+			guests
+				.boolean("attending")
+				.notNullable()
+				.defaultTo(false);
 		})
 		.createTable("recipes", recipes => {
 			recipes.increments("recipe_id");

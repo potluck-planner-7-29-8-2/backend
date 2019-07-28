@@ -66,16 +66,16 @@ module.exports = {
 		// .then(count => (count !== 0 ? this.getById(id) : null));
 	},
 
-	updateGuest: function(event_id, user_id, attending) {
+	updateGuest: function(event_id, user_id, changes) {
 		return db("guests")
 			.where({ event_id, user_id })
-			.update({ attending })
+			.update(changes)
 			.then(count => (count !== 0 ? this.getByIdGuests(event_id) : null));
 	},
 
 	updateRecipe: function(event_id, changes) {
 		return db("recipes")
-			.where({ event_id })
+			.where({ event_id, recipe_name: changes.recipe_name })
 			.update(changes)
 			.then(count => (count !== 0 ? this.getByIdRecipes(event_id) : null));
 	},
