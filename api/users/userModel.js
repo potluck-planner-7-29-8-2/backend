@@ -42,8 +42,9 @@ module.exports = {
 	},
 
 	insert: function(user) {
-		return db("users").insert(user, "id");
-		// .then(([id]) => this.getById(id));
+		return db("users")
+			.insert(user, "user_id")
+			.then(([id]) => this.getById(id));
 	},
 
 	update: function(id, full_name) {

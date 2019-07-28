@@ -35,7 +35,7 @@ module.exports = {
 
 	insert: function(event) {
 		return db("events")
-			.insert(event, "id")
+			.insert(event, "event_id")
 			.then(([id]) => this.getById(id).first());
 	},
 
