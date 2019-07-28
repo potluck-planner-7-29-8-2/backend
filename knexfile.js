@@ -21,35 +21,39 @@ module.exports = {
 		}
 	},
 
-	staging: {
-		client: "postgresql",
+	development: {
+		client: "sqlite3",
+		useNullAsDefault: true,
 		connection: {
-			database: "my_db",
-			user: "username",
-			password: "password"
+			filename: "./data/test.db3"
 		},
 		pool: {
-			min: 2,
-			max: 10
+			afterCreate: (conn, done) => {
+				conn.run("PRAGMA foreign_keys = ON", done);
+			}
 		},
 		migrations: {
-			tableName: "knex_migrations"
+			directory: "./data/migrations",
+			tableName: "test"
+		},
+		seeds: {
+			directory: "./data/seeds"
 		}
 	},
 
 	production: {
-		client: "postgresql",
-		connection: {
-			database: "my_db",
-			user: "username",
-			password: "password"
-		},
-		pool: {
-			min: 2,
-			max: 10
+		client: "pg",
+		connection: process.env.DATABASE_URL || {
+			database: "potluck-planner",
+			user: "user",
+			password: "pass"
 		},
 		migrations: {
-			tableName: "knex_migrations"
+			directory: "./data/migrations",
+			tableName: "potluck-planner"
+		},
+		seeds: {
+			directory: "./data/seeds"
 		}
 	}
 };
