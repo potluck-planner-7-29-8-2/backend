@@ -35,7 +35,7 @@ module.exports = {
 
 	insert: function(event) {
 		return db("events")
-			.insert(event)
+			.insert(event, "id")
 			.then(([id]) => this.getById(id).first());
 	},
 
@@ -46,6 +46,7 @@ module.exports = {
 				user_id: guest.user_id,
 				attending: guest.attending
 			})
+			.returning()
 			.then(() => this.getByIdGuests(event_id));
 	},
 
@@ -55,6 +56,7 @@ module.exports = {
 				event_id,
 				recipe_name: recipe.recipe_name
 			})
+			.returning()
 			.then(() => this.getByIdRecipes(event_id));
 	},
 
