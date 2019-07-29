@@ -25,7 +25,11 @@ router.post("/login", middleware.checkUserLogin, async (req, res) => {
 		const user = username ? await userDB.getByUsername(username) : null;
 		if (user && bcrypt.compareSync(password, user.password)) {
 			const token = generateToken(user);
-			res.status(200).json({ message: `Welcome ${user.username}!`, token });
+			res.status(200).json({
+				message: `Welcome ${user.username}!`,
+				token,
+				user_id: `${user.user_id}`
+			});
 		} else {
 			res.status(401).json({ message: "Invalid Credentials" });
 		}
