@@ -3,13 +3,13 @@ const mappers = require("../mappers");
 
 module.exports = {
 	getAll: function() {
-		return db("users").select("user_id", "username", "full_name");
+		return db("users").select("user_id", "username", "full_name", "email");
 	},
 
 	getById: function(id) {
 		return db("users as u")
 			.where("user_id", id)
-			.select("u.user_id", "u.username", "u.full_name")
+			.select("u.user_id", "u.username", "u.full_name", "u.email")
 			.first();
 	},
 

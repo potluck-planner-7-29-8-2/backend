@@ -33,13 +33,13 @@ async function checkUserRegister(req, res, next) {
 		const user = req.body.username
 			? await userDB.getByUsername(req.body.username)
 			: null;
-		const { username, password, full_name } = req.body;
+		const { username, password, full_name, email } = req.body;
 		if (Object.keys(req.body).length === 0) {
 			res.status(400).json({ message: "Missing User Data." });
-		} else if (!username || !password || !full_name) {
+		} else if (!username || !password || !full_name || !email) {
 			res.status(400).json({
 				message:
-					"Please ensure information for username, password, and full_name is included."
+					"Please ensure information for username, password, full_name, and email is included."
 			});
 		} else if (user && req.body.username === user.username) {
 			res.status(401).json({
