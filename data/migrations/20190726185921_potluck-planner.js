@@ -8,6 +8,7 @@ exports.up = function(knex) {
 				.unique();
 			users.string("password").notNullable();
 			users.string("full_name").notNullable();
+			users.string("email").notNullable();
 		})
 		.createTable("events", events => {
 			events.increments("event_id");
