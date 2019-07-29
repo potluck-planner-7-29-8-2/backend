@@ -28,7 +28,7 @@ router.post("/login", middleware.checkUserLogin, async (req, res) => {
 			res.status(200).json({
 				message: `Welcome ${user.username}!`,
 				token,
-				user_id: `${user.user_id}`
+				user_id: user.user_id
 			});
 		} else {
 			res.status(401).json({ message: "Invalid Credentials" });
