@@ -5,7 +5,8 @@
 	"main": "index.js",
 	"scripts": {
 		"server": "nodemon index.js",
-		"start": "node index.js"
+		"start": "node index.js",
+		"test": "cross-env DB_ENV=testing jest --watch"
 	},
 	"repository": {
 		"type": "git",
@@ -18,7 +19,10 @@
 	},
 	"homepage": "https://github.com/potluck-planner-7-29-8-2/backend#readme",
 	"devDependencies": {
-		"nodemon": "^1.19.1"
+		"cross-env": "^5.2.0",
+		"jest": "^24.8.0",
+		"nodemon": "^1.19.1",
+		"supertest": "^4.0.2"
 	},
 	"dependencies": {
 		"bcryptjs": "^2.4.3",
