@@ -228,10 +228,6 @@ router.put("/:id/guests/:userId", middleware.checkEventId, async (req, res) => {
 	}
 });
 
-function boolToInt(bool) {
-	return bool === true ? 1 : 0;
-}
-
 router.put("/:id/recipes", middleware.checkEventId, async (req, res) => {
 	try {
 		let { recipe_name, user_id } = req.body;
@@ -261,7 +257,7 @@ router.put("/:id/recipes", middleware.checkEventId, async (req, res) => {
 			res.status(404).json({
 				message: "Recipe does not exist on the event recipe list."
 			});
-		} else if (checkGuest) {
+		} else if (checkGuest || user_id === null) {
 			const updated = await eventDB.updateRecipe(req.params.id, req.body);
 			res.status(200).json(updated);
 		} else {
