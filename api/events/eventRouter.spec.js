@@ -224,12 +224,12 @@ describe("routes", () => {
 	describe("delete guest by event id", () => {
 		it("should return 200 for deleting a guest in the second event", () => {
 			const guest = {
-				data: {
-					user_id: 2
-				}
+				// data: {
+				user_id: 2
+				// }
 			};
 			return request(server)
-				.put(`/events/2/guests`)
+				.delete(`/events/2/guests`)
 				.set("authorization", token)
 				.send(guest)
 				.then(res => {
@@ -241,12 +241,12 @@ describe("routes", () => {
 	describe("delete recipes by event id", () => {
 		it("should return 200 for deleting a recipe in the second event", () => {
 			const recipe = {
-				data: {
-					recipe_name: "wine"
-				}
+				// data: {
+				recipe_name: "wine"
+				// }
 			};
 			return request(server)
-				.put(`/events/2/recipes`)
+				.delete(`/events/2/recipes`)
 				.set("authorization", token)
 				.send(recipe)
 				.then(res => {
@@ -255,14 +255,14 @@ describe("routes", () => {
 		});
 	});
 
-	// describe("delete event by event id", () => {
-	// 	it("should return 200 for deleting the second event", () => {
-	// 		return request(server)
-	// 			.delete(`/events/2`)
-	// 			.set("authorization", token)
-	// 			.then(res => {
-	// 				expect(res.status).toBe(200);
-	// 			});
-	// 	});
-	// });
+	describe("delete event by event id", () => {
+		it("should return 200 for deleting the second event", () => {
+			return request(server)
+				.delete(`/events/2`)
+				.set("authorization", token)
+				.then(res => {
+					expect(res.status).toBe(200);
+				});
+		});
+	});
 });
