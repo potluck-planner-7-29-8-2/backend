@@ -37,9 +37,50 @@ describe("routes", () => {
 					expect(res.status).toBe(201);
 				});
 		});
+
+		it("should return 400 for empty body", () => {
+			const blank = {};
+
+			return request(server)
+				.post(`/users/register`)
+				.send(blank)
+				.then(res => {
+					expect(res.status).toBe(400);
+				});
+		});
+
+		it("should return 401 for duplicate username", () => {
+			const duplicate = {
+				username: "user",
+				password: "pass",
+				full_name: "full_name",
+				email: "email"
+			};
+
+			return request(server)
+				.post(`/users/register`)
+				.send(duplicate)
+				.then(res => {
+					expect(res.status).toBe(401);
+				});
+		});
 	});
 
 	describe("login", () => {
+		it("should return 401 for invalid credentials", async () => {
+			const wrongLog = {
+				username: "user",
+				password: "pass1"
+			};
+
+			return request(server)
+				.post(`/users/login`)
+				.send(wrongLog)
+				.then(res => {
+					expect(res.status).toBe(401);
+				});
+		});
+
 		it("should return 200 for logging in", async () => {
 			const userLog = {
 				username: "user",
@@ -56,7 +97,7 @@ describe("routes", () => {
 		});
 	});
 
-	describe("get", () => {
+	describe("get all users", () => {
 		it("should return 200 for retrieving all users", () => {
 			return request(server)
 				.get(`/users/`)
@@ -67,7 +108,7 @@ describe("routes", () => {
 		});
 	});
 
-	describe("get by id", () => {
+	describe("get user by id", () => {
 		it("should return 200 for retrieving the first user", () => {
 			return request(server)
 				.get(`/users/1`)
