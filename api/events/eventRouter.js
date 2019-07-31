@@ -206,7 +206,6 @@ router.put("/:id/guests/:userId", middleware.checkEventId, async (req, res) => {
 				message: "User/guest does not exist on the event guest list."
 			});
 		} else if (attending === true || attending === false) {
-			attending = boolToInt(attending);
 			const updated = await eventDB.updateGuest(
 				req.params.id,
 				req.params.userId,
