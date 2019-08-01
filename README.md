@@ -12,8 +12,10 @@ This server uses knex, knex-cleaner, bcryptjs, cors, dotenv, express, helmet, an
 
 # Getting Started
 
-[] Fork this repository
-[] Navigate into the backend directory
-[] `npm install` to install dependencies
-[] `npm run server` to run server on local host (uses SQlite3)
-[] `npm run test` to run jest tests
+Follow these steps to get setup on this server
+
+- [] Fork this repository
+- [] Navigate into the backend directory
+- [] `npm install` to install dependencies
+- [] `npm run server` to run server on local host (uses SQlite3)
+- [] `npm run test` to run jest tests
